@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Announcements & Events - Sports, Health & Wellness</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .nav-tabs .nav-link.active {
+            background-color: var(--blue);
+            color: white;
+        }
+        .card-announcement { border-left: 5px solid #0d6efd; }
+        .card-event { border-left: 5px solid #198754; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">
+                <img src="pictures/Kagiso_Logo.jpg" alt="Kagiso Logo" style="max-height: 180px">Sports, Health & Wellness
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="announcements.html">Announcements</a></li>
+                    <li class="nav-item"><a class="nav-link" href="queries.html">Queries</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html" id="logout">Exit</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <h2 class="mb-4 text-center" style="color: var(--blue)">Announcements & Events</h2>
+
+        <div id="directorTools" class="card p-4 mb-5 border-primary" style="display: none;">
+            <h5 class="text-primary mb-3">Director Controls</h5>
+            <a href="admin-announcements.html" class="btn btn-primary btn-lg w-100">
+                Go to Director Dashboard (Add / Edit / Delete)
+            </a>
+            <small class="text-muted d-block text-center mt-2">Add announcements, events, weekly quotes, etc.</small>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" id="mainTabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#annTab">Announcements</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#eventsTab">Events</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Announcements Tab -->
+            <div class="tab-pane fade show active" id="annTab">
+                <div id="announcementsList" class="row g-4"></div>
+                <div id="noAnnouncements" class="text-center text-muted py-5" style="display: none;">
+                    <p>No announcements yet. Check back soon!</p>
+                </div>
+            </div>
+
+            <!-- Events Tab -->
+            <div class="tab-pane fade" id="eventsTab">
+                <div id="eventsList" class="row g-4"></div>
+                <div id="noEvents" class="text-center text-muted py-5" style="display: none;">
+                    <p>No upcoming events scheduled yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-5 py-4 bg-light">
+        <p>© 2025 RC Sports, Health & Wellness | UFS</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        const isDirector = localStorage.getItem('isDirector') === 'true';
+        if (isDirector) {
+            document.getElementById("directorTools").style.display = "block";
+        }
+
+        // Load Announcements
+        function loadAnnouncements() {
+            const container = document.getElementById("announcementsList");
+            const noMsg = document.getElementById("noAnnouncements");
+            let data = JSON.parse(localStorage.getItem("announcements") || "[]");
+
+            // Sort by date (newest first)
+            data.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
+
+            if (data.length === 0) {
+                container.innerHTML = "";
+                noMsg.style.display = "block";
+                return;
+            }
+
+            noMsg.style.display = "none";
+
+            container.innerHTML = data.map(item => `
+                <div class="col-12 col-lg-8 mx-auto">
+                    <div class="card card-announcement shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color: var(--blue)">${item.title || item.annTitle || 'Announcement'}</h5>
+                            <small class="text-muted">
+                                Posted: ${new Date(item.date || item.createdAt).toLocaleDateString('en-ZA')}
+                            </small>
+                            <p class="card-text mt-3">${(item.content || item.body || '').replace(/\n/g, '<br>')}</p>
+                            
+                            ${isDirector ? `
+                                <button class="btn btn-danger btn-sm mt-3" 
+                                        onclick="deleteItem('announcements', ${item.id || item._id || 'null'})">
+                                    Delete Announcement
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load Events
+        function loadEvents() {
+            const container = document.getElementById("eventsList");
+            const noMsg = document.getElementById("noEvents");
+            let data = JSON.parse(localStorage.getItem("events") || "[]");
+
+            if (data.length === 0) {
+                container.innerHTML = "";
+                noMsg.style.display = "block";
+                return;
+            }
+
+            noMsg.style.display = "none";
+
+            container.innerHTML = data.map((item, index) => `
+                <div class="col-12 col-lg-8 mx-auto">
+                    <div class="card card-event shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">${item.title}</h5>
+                            <p class="text-success mb-1">
+                                <strong>When:</strong> ${new Date(item.date).toLocaleString('en-ZA', { 
+                                    weekday: 'long', 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric', 
+                                    hour: '2-digit', 
+                                    minute: '2-digit' 
+                                })}
+                            </p>
+                            ${item.location ? `<p><strong>Where:</strong> ${item.location}</p>` : ''}
+                            <p class="card-text">${item.description || item.body || ''}</p>
+                            
+                            ${isDirector ? `
+                                <button class="btn btn-danger btn-sm mt-3" 
+                                        onclick="deleteItem('events', ${index})">
+                                    Remove Event
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // delete function (works for both)
+        window.deleteItem = function(type, identifier) {
+            if (!confirm(`Delete this ${type === 'announcements' ? 'announcement' : 'event'} permanently?`)) return;
+
+            let items = JSON.parse(localStorage.getItem(type) || "[]");
+
+            if (type === 'announcements') {
+                items = items.filter(item => item.id !== identifier);
+            } else {
+                items.splice(identifier, 1); // events
+            }
+
+            localStorage.setItem(type, JSON.stringify(items));
+            loadAnnouncements();
+            loadEvents();
+        };
+
+        // Initialize everything
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAnnouncements();
+            loadEvents();
+        });
+    </script>
+</body>
+</html>

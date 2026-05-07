@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Queries - RC Sports, Health & Wellness</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .sandbox-warning { background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+    .query-card { transition: all 0.3s; }
+    .query-card:hover { transform: translateY(-3px); }
+    .status-pending { border-left: 5px solid #ffc107; }
+    .status-replied { border-left: 5px solid #28a745; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="home.html">
+        <img src="pictures/Kagiso_Logo.jpg" alt="Kagiso Logo" style="max-height: 180px">Sports, Health & Wellness
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="announcements.html">Announcements</a></li>
+          <li class="nav-item"><a class="nav-link active" href="queries.html">Queries</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html">Exit</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+
+        
+        <div id="sandboxWarning" class="alert sandbox-warning text-center mb-4" style="display: none;">
+          <strong>Note:</strong> Sandbox mode active. Your queries will not persist after page refresh.
+        </div>
+
+        <h2 class="text-center mb-4" style="color: var(--blue)">My Queries</h2>
+
+        <div class="card shadow mb-5">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Submit a New Query</h5>
+          </div>
+          <div class="card-body">
+            <form id="queryForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Your Full Name</label>
+                  <input type="text" id="studentName" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Subject</label>
+                  <select id="subject" class="form-select" required>
+                    <option value="">Select Subject</option>
+                    <option value="Sports Event">Sports Event</option>
+                    <option value="Health & Wellness">Health & Wellness</option>
+                    <option value="Training Schedule">Training Schedule</option>
+                    <option value="Membership">Membership</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-3 mt-3">
+                <label class="form-label">Your Message / Query</label>
+                <textarea id="message" class="form-control" rows="5" placeholder="Type your question or concern here..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 btn-lg">Submit Query</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Submitted Queries -->
+        <h4 class="mb-3">My Submitted Queries</h4>
+        <div id="myQueriesList" class="row g-4"></div>
+
+        <div id="noQueries" class="text-center text-muted py-5" style="display: none;">
+          <p>You haven't submitted any queries yet.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center mt-5 py-4 bg-light">
+    <p>© 2025 RC Sports, Health & Wellness | UFS</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    let storageAvailable = true;
+    let memoryStorage = {};
+
+    function safeGet(key) {
+      if (storageAvailable) {
+        try {
+          return JSON.parse(localStorage.getItem(key) || '[]');
+        } catch (e) {
+          storageAvailable = false;
+          document.getElementById('sandboxWarning').style.display = 'block';
+        }
+      }
+      return memoryStorage[key] || [];
+    }
+
+    function safeSet(key, data) {
+      if (storageAvailable) {
+        try {
+          localStorage.setItem(key, JSON.stringify(data));
+          return;
+        } catch (e) {
+          storageAvailable = false;
+          document.getElementById('sandboxWarning').style.display = 'block';
+        }
+      }
+      memoryStorage[key] = data;
+    }
+
+    // Render student's queries
+    function renderMyQueries() {
+      const container = document.getElementById('myQueriesList');
+      const noMsg = document.getElementById('noQueries');
+      let allQueries = safeGet('queries');
+
+
+      if (allQueries.length === 0) {
+        container.innerHTML = "";
+        noMsg.style.display = "block";
+        return;
+      }
+
+      noMsg.style.display = "none";
+
+      container.innerHTML = allQueries.map((q, index) => `
+        <div class="col-12">
+          <div class="card query-card ${q.replied ? 'status-replied' : 'status-pending'} shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <h5 class="card-title">${q.subject}</h5>
+                <span class="badge ${q.replied ? 'bg-success' : 'bg-warning text-dark'}">
+                  ${q.replied ? 'Replied' : 'Pending'}
+                </span>
+              </div>
+              
+              <p class="text-muted small mb-2">
+                Submitted: ${new Date(q.date).toLocaleString('en-ZA')}
+              </p>
+              
+              <p class="card-text">${q.message.replace(/\n/g, '<br>')}</p>
+
+              ${q.reply ? `
+                <div class="alert alert-success mt-3">
+                  <strong>RC Sports Reply:</strong><br>
+                  ${q.reply}
+                </div>
+              ` : `
+                <div class="alert alert-warning mt-3 small">
+                  <strong>Status:</strong> Awaiting reply from the RC Sports
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Handle form submission
+    document.getElementById('queryForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const newQuery = {
+        id: Date.now(),
+        studentName: document.getElementById('studentName').value.trim(),
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value.trim(),
+        date: new Date().toISOString(),
+        replied: false,
+        reply: null
+      };
+
+      let queries = safeGet('queries');
+      queries.unshift(newQuery);           // Add to top (newest first)
+      safeSet('queries', queries);
+
+      alert("✅ Your query has been submitted successfully!\nThe director will reply soon.");
+
+      this.reset();                        // Clear the form
+      renderMyQueries();                   // Refresh the list immediately
+    });
+
+    // Initialize page
+    document.addEventListener("DOMContentLoaded", () => {
+      renderMyQueries();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home - RC Sports</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="home.html">
+      <img src="pictures/Kagiso_Logo.jpg" alt="Kagiso Logo" style="max-height: 180px">Sports, Health & Wellness
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="home.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="announcements.html">Announcements</a></li>
+        <li class="nav-item"><a class="nav-link" href="queries.html">Queries</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html" id="logout">Exit</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <img src="pictures/Kagiso_Logo.jpg" alt="House Kagiso Logo" class="img-fluid" style="max-height:180px;">
+    <h1 class="mt-4" style="color:var(--blue)">Welcome to Kagiso, Sports, Health & Wellness</h1>
+    <p class="tagline">"Strong Body. Strong Mind. Strong Community."</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card h-100 p-4">
+        <h4>House Information</h4>
+        <p>Kagiso is a vibrant residence committed to excellence in sports, academic achievement, and holistic wellness...</p>
+        <img src="pictures/RC_Sports.jpeg" style="max-height: 250px; max-width: 200px">
+        <p>RC Sports, Health and Wellness 2026: <strong>Mpho Mokoena</strong><br>
+          Contact Details: <strong>067 930 9823</strong></p>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card h-100 p-4">
+        <h4>UFS Student Counselling & Development</h4>
+        <p>We partner with UFS SCD to support your mental health and personal growth.</p>
+        <img src="pictures/UFS_SCD_Logo.png" alt="UFS Logo" class="mt-3" style="max-height:300px; max-width:300px">
+        <p><strong>Phone Number:</strong> <a href="tel:+27514012853">051 401 2853</a> <br>
+        <strong>Email Address:</strong> <a href="mailto:scd@ufs.ac.za">scd@ufs.ac.za</a><br>
+        <strong>Location:</strong> Kovsie Health Building, 1st floor, Graduandi Street<br>
+        <strong>Website:</strong> <a href="https://www.ufs.ac.za/kovsiecounselling">Kovsie Counselling</a> <br>
+        <strong>24/7 UFS Student Careline:</strong> 0800 00 6363</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center my-5">
+    <h4>National Helpline for Health & Wellness</h4>
+    <h3 style="color:var(--blue); font-weight:bold;">0800 456 789</h3>
+  </div>
+
+  <div id="weeklyQuote" class="quote-box">
+    "The only bad workout is the one that didn't happen."
+  </div>
+
+  <div id="directorTools" class="text-center my-5" style="display:none;">
+    <button class="btn btn-primary me-3" onclick="addPhoto()">Add Photos</button>
+    <button class="btn btn-primary" onclick="addQuote()">Add Weekly Quote</button>
+  </div>
+</div>
+
+<footer class="text-center">
+  <p>&copy; 2025 RC Sports, Health & Wellness | UFS</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
